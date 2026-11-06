@@ -7,7 +7,9 @@ import connectDB from "./config/db.js";
 import Book from "./models/Book.js";
 import Order from "./models/Order.js";
 import upload from "./middleware/upload.js";
+
 import { verifyFirebaseToken } from "./middleware/verifyFirebaseToken.js";
+import { verifyAdmin } from "./middleware/verifyAdmin.js";
 
 dotenv.config();
 
@@ -17,7 +19,24 @@ const app = express();
 // 1. MIDDLEWARE
 // ======================================
 
-app.use(cors());
+const allowedOrigins = [
+  "http://localhost:5173",
+  process.env.FRONTEND_URL,
+].filter(Boolean);
+
+app.use(
+  cors({
+    origin: (origin, callback) => {
+      if (!origin || allowedOrigins.includes(origin)) {
+        return callback(null, true);
+      }
+
+      return callback(new Error("Not allowed by CORS"));
+    },
+    credentials: true,
+  })
+);
+
 app.use(express.json());
 
 app.use("/uploads", express.static("uploads"));
@@ -31,7 +50,7 @@ app.get("/", (req, res) => {
 });
 
 // ======================================
-// 3. GET ALL BOOKS
+// 3. GET ALL BOOKS - PUBLIC
 // ======================================
 
 app.get("/api/books", async (req, res) => {
@@ -47,7 +66,7 @@ app.get("/api/books", async (req, res) => {
 });
 
 // ======================================
-// 4. GET SINGLE BOOK
+// 4. GET SINGLE BOOK - PUBLIC
 // ======================================
 
 app.get("/api/books/:id", async (req, res) => {
@@ -70,106 +89,127 @@ app.get("/api/books/:id", async (req, res) => {
 });
 
 // ======================================
-// 5. ADD NEW BOOK
+// 5. ADD NEW BOOK - ADMIN ONLY
 // ======================================
 
-app.post("/api/books", async (req, res) => {
-  try {
-    const newBook = new Book(req.body);
-    const savedBook = await newBook.save();
+app.post(
+  "/api/books",
+  verifyFirebaseToken,
+  verifyAdmin,
+  async (req, res) => {
+    try {
+      const newBook = new Book(req.body);
+      const savedBook = await newBook.save();
 
-    res.status(201).json({
-      message: "Book added successfully!",
-      book: savedBook,
-    });
-  } catch (error) {
-    res.status(400).json({
-      message: error.message,
-    });
-  }
-});
-
-// ======================================
-// 6. UPLOAD PDF
-// ======================================
-
-app.post("/api/upload-pdf", upload.single("pdf"), (req, res) => {
-  try {
-    if (!req.file) {
-      return res.status(400).json({
-        message: "Please upload a PDF file.",
+      res.status(201).json({
+        message: "Book added successfully!",
+        book: savedBook,
+      });
+    } catch (error) {
+      res.status(400).json({
+        message: error.message,
       });
     }
-
-    const fileUrl = `${req.protocol}://${req.get("host")}/uploads/${req.file.filename}`;
-
-    res.status(200).json({
-      message: "PDF uploaded successfully!",
-      fileUrl,
-    });
-  } catch (error) {
-    res.status(500).json({
-      message: error.message,
-    });
   }
-});
+);
 
 // ======================================
-// 7. UPDATE BOOK
+// 6. UPLOAD PDF - ADMIN ONLY
 // ======================================
 
-app.put("/api/books/:id", async (req, res) => {
-  try {
-    const updatedBook = await Book.findByIdAndUpdate(
-      req.params.id,
-      req.body,
-      {
-        new: true,
-        runValidators: true,
+app.post(
+  "/api/upload-pdf",
+  verifyFirebaseToken,
+  verifyAdmin,
+  upload.single("pdf"),
+  (req, res) => {
+    try {
+      if (!req.file) {
+        return res.status(400).json({
+          message: "Please upload a PDF file.",
+        });
       }
-    );
 
-    if (!updatedBook) {
-      return res.status(404).json({
-        message: "Book not found",
+      const fileUrl = `${req.protocol}://${req.get("host")}/uploads/${req.file.filename}`;
+
+      res.status(200).json({
+        message: "PDF uploaded successfully!",
+        fileUrl,
+      });
+    } catch (error) {
+      res.status(500).json({
+        message: error.message,
       });
     }
-
-    res.status(200).json({
-      message: "Book updated successfully!",
-      book: updatedBook,
-    });
-  } catch (error) {
-    res.status(400).json({
-      message: error.message,
-    });
   }
-});
+);
 
 // ======================================
-// 8. DELETE BOOK
+// 7. UPDATE BOOK - ADMIN ONLY
 // ======================================
 
-app.delete("/api/books/:id", async (req, res) => {
-  try {
-    const deletedBook = await Book.findByIdAndDelete(req.params.id);
+app.put(
+  "/api/books/:id",
+  verifyFirebaseToken,
+  verifyAdmin,
+  async (req, res) => {
+    try {
+      const updatedBook = await Book.findByIdAndUpdate(
+        req.params.id,
+        req.body,
+        {
+          new: true,
+          runValidators: true,
+        }
+      );
 
-    if (!deletedBook) {
-      return res.status(404).json({
-        message: "Book not found",
+      if (!updatedBook) {
+        return res.status(404).json({
+          message: "Book not found",
+        });
+      }
+
+      res.status(200).json({
+        message: "Book updated successfully!",
+        book: updatedBook,
+      });
+    } catch (error) {
+      res.status(400).json({
+        message: error.message,
       });
     }
-
-    res.status(200).json({
-      message: "Book deleted successfully!",
-      book: deletedBook,
-    });
-  } catch (error) {
-    res.status(400).json({
-      message: error.message,
-    });
   }
-});
+);
+
+// ======================================
+// 8. DELETE BOOK - ADMIN ONLY
+// ======================================
+
+app.delete(
+  "/api/books/:id",
+  verifyFirebaseToken,
+  verifyAdmin,
+  async (req, res) => {
+    try {
+      const deletedBook = await Book.findByIdAndDelete(req.params.id);
+
+      if (!deletedBook) {
+        return res.status(404).json({
+          message: "Book not found",
+        });
+      }
+
+      res.status(200).json({
+        message: "Book deleted successfully!",
+        book: deletedBook,
+      });
+    } catch (error) {
+      res.status(400).json({
+        message: error.message,
+      });
+    }
+  }
+);
 
 // ======================================
 // 9. FIREBASE AUTHENTICATION TEST
@@ -184,7 +224,6 @@ app.get("/api/auth/me", verifyFirebaseToken, (req, res) => {
     },
   });
 });
-
 
 // ======================================
 // 10. FREE EBOOK CHECKOUT
@@ -205,11 +244,7 @@ app.post("/api/orders", verifyFirebaseToken, async (req, res) => {
     for (const item of items) {
       const { bookId, format, quantity } = item;
 
-      if (
-        !bookId ||
-        format !== "ebook" ||
-        quantity !== 1
-      ) {
+      if (!bookId || format !== "ebook" || quantity !== 1) {
         return res.status(400).json({
           message: "Only single free ebook purchases are allowed.",
         });
@@ -269,7 +304,6 @@ app.post("/api/orders", verifyFirebaseToken, async (req, res) => {
       message: "Your free ebooks have been added to your library!",
       order: savedOrder,
     });
-
   } catch (error) {
     console.error("Checkout error:", error);
 
@@ -280,9 +314,8 @@ app.post("/api/orders", verifyFirebaseToken, async (req, res) => {
   }
 });
 
-
 // ======================================
-// MY LIBRARY - GET PURCHASED EBOOKS
+// 11. MY LIBRARY
 // ======================================
 
 app.get("/api/my-library", verifyFirebaseToken, async (req, res) => {
@@ -330,9 +363,8 @@ app.get("/api/my-library", verifyFirebaseToken, async (req, res) => {
   }
 });
 
-
 // ======================================
-// 11. HANDLE ERRORS
+// 12. HANDLE ERRORS
 // ======================================
 
 app.use((error, req, res, next) => {
@@ -344,7 +376,7 @@ app.use((error, req, res, next) => {
 });
 
 // ======================================
-// 12. START SERVER
+// 13. START SERVER
 // ======================================
 
 const PORT = process.env.PORT || 5000;
