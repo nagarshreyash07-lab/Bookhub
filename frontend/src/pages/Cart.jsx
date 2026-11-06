@@ -51,7 +51,7 @@ function Cart() {
 
       const token = await currentUser.getIdToken();
 
-      const response = await fetch( `${import.meta.env.VITE_API_URL}/api/auth/me`, {
+      const response = await fetch( `${import.meta.env.VITE_API_URL}/api/orders`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
