@@ -22,7 +22,7 @@ function MyLibrary() {
         const token = await currentUser.getIdToken();
 
         const response = await fetch(
-          "http://localhost:5000/api/my-library",
+          `${import.meta.env.VITE_API_URL}/api/auth/me`,
           {
             headers: {
               Authorization: `Bearer ${token}`,

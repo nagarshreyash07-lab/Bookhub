@@ -8,7 +8,7 @@ import "./EbookReader.css";
 
 pdfjsLib.GlobalWorkerOptions.workerSrc = pdfjsWorker;
 
-const API_URL = "http://localhost:5000";
+const API_URL = import.meta.env.VITE_API_URL;
 
 function EbookReader() {
   const { id } = useParams();

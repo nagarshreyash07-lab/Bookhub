@@ -20,7 +20,7 @@ function BookDetails() {
         setError("");
 
         const response = await fetch(
-          `http://localhost:5000/api/books/${id}`
+           `${import.meta.env.VITE_API_URL}/api/auth/me`,
         );
 
         if (!response.ok) {

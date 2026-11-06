@@ -15,7 +15,7 @@ function Home() {
     async function fetchBooks() {
       try {
         const response = await fetch(
-          "http://localhost:5000/api/books"
+          `${import.meta.env.VITE_API_URL}/api/auth/me`,
         );
 
         if (!response.ok) {
