@@ -1,0 +1,63 @@
+
+export const books = [
+  {
+    id: 1,
+    title: "Atomic Habits",
+    author: "James Clear",
+    category: "Self Development",
+    price: 399,
+    cover: "📘",
+    color: "#E8E9F5",
+    rating: 4.8,
+    pages: 320,
+    language: "English",
+    description:
+      "An easy and practical guide to building good habits, breaking bad ones, and making small improvements that lead to remarkable results.",
+    stock: 25,
+  },
+  {
+    id: 2,
+    title: "The Alchemist",
+    author: "Paulo Coelho",
+    category: "Fiction",
+    price: 299,
+    cover: "📕",
+    color: "#F5E5D5",
+    rating: 4.6,
+    pages: 208,
+    language: "English",
+    description:
+      "A young shepherd travels in search of treasure and discovers lessons about dreams, destiny, courage and listening to one's heart.",
+    stock: 18,
+  },
+  {
+    id: 3,
+    title: "Deep Work",
+    author: "Cal Newport",
+    category: "Productivity",
+    price: 349,
+    cover: "📗",
+    color: "#DFEDE5",
+    rating: 4.7,
+    pages: 304,
+    language: "English",
+    description:
+      "A guide to developing focused, distraction-free work habits and producing meaningful results in an increasingly distracted world.",
+    stock: 12,
+  },
+  {
+    id: 4,
+    title: "Think Like a Monk",
+    author: "Jay Shetty",
+    category: "Self Development",
+    price: 320,
+    cover: "📙",
+    color: "#F4E7D8",
+    rating: 4.5,
+    pages: 352,
+    language: "English",
+    description:
+      "Lessons inspired by monk training to help readers develop purpose, overcome negativity and build a more meaningful life.",
+    stock: 20,
+  },
+];

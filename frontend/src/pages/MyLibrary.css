@@ -1,0 +1,169 @@
+
+.my-library {
+  min-height: 80vh;
+  padding: 55px 8%;
+  background: #faf9f6;
+  color: #292522;
+}
+
+.library-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 20px;
+  margin-bottom: 35px;
+}
+
+.library-eyebrow {
+  color: #8a3b46;
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 2px;
+}
+
+.library-header h1 {
+  font-size: 38px;
+  margin: 10px 0;
+}
+
+.library-header p {
+  color: #777;
+}
+
+.explore-library-btn,
+.read-book-btn {
+  display: inline-block;
+  background: #71333e;
+  color: white;
+  text-decoration: none;
+  padding: 12px 20px;
+  border-radius: 6px;
+  font-weight: 600;
+  transition: 0.2s;
+}
+
+.explore-library-btn:hover,
+.read-book-btn:hover {
+  background: #51232c;
+}
+
+.library-stats {
+  padding: 20px 0;
+  border-top: 1px solid #e8e3df;
+  border-bottom: 1px solid #e8e3df;
+  margin-bottom: 35px;
+}
+
+.library-stats h2 {
+  font-size: 28px;
+  margin: 0;
+}
+
+.library-stats p {
+  color: #777;
+  margin: 5px 0 0;
+}
+
+.library-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+  gap: 28px;
+}
+
+.library-book-card {
+  background: white;
+  border: 1px solid #eee9e5;
+  border-radius: 10px;
+  overflow: hidden;
+  transition: 0.2s;
+}
+
+.library-book-card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.07);
+}
+
+.library-book-cover {
+  height: 220px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-size: 65px;
+  overflow: hidden;
+}
+
+.library-book-cover img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.library-book-info {
+  padding: 18px;
+}
+
+.library-book-info h3 {
+  font-size: 17px;
+  margin: 0 0 7px;
+}
+
+.library-book-info p {
+  color: #777;
+  margin: 0 0 12px;
+}
+
+.library-book-info span {
+  display: block;
+  font-size: 12px;
+  color: #999;
+  margin-bottom: 15px;
+}
+
+.read-book-btn {
+  display: block;
+  text-align: center;
+}
+
+.library-message {
+  min-height: 60vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #777;
+}
+
+.empty-library {
+  text-align: center;
+  padding: 65px 20px;
+}
+
+.empty-library-icon {
+  font-size: 55px;
+  margin-bottom: 15px;
+}
+
+.empty-library h2 {
+  font-size: 25px;
+}
+
+.empty-library p {
+  color: #777;
+  max-width: 420px;
+  margin: 10px auto 25px;
+  line-height: 1.6;
+}
+
+@media (max-width: 650px) {
+  .my-library {
+    padding: 35px 5%;
+  }
+
+  .library-header {
+    align-items: flex-start;
+    flex-direction: column;
+  }
+
+  .library-header h1 {
+    font-size: 30px;
+  }
+}
